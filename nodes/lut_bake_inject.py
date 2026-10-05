@@ -96,7 +96,7 @@ class LUTBakeInject:
         }
 
         print(f"[Darkroom] LUT Bake Inject: photo {pw}x{ph} + lattice {lw}x{lh} "
-              f"→ canvas {target_w}x{target_h}, batch=2")
+              f"-> canvas {target_w}x{target_h}, batch=2")
 
         return (batched, meta)
 

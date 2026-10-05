@@ -88,7 +88,7 @@ class LUTExport:
         # Write .cube file
         write_cube_file(filepath, lut_3d, size, title=title)
 
-        print(f"[Darkroom] LUT Export: saved {size}^3 ({size ** 3:,} entries) → {filepath}")
+        print(f"[Darkroom] LUT Export: saved {size}^3 ({size ** 3:,} entries) -> {filepath}")
 
         return (filepath,)
 

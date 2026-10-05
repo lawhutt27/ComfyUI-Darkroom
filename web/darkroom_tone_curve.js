@@ -11,6 +11,8 @@
 
 import { registerCanvasNode } from "./darkroom_canvas_widget.js";
 import { createCurveController } from "./darkroom_curve_core.js";
+import { createStack } from "./darkroom_stack.js";
+import { createLiveHistogram } from "./darkroom_live_histogram.js";
 
 const SPEC = {
   tag: "ToneCurve",
@@ -34,5 +36,9 @@ const SPEC = {
 };
 
 registerCanvasNode("DarkroomToneCurve", "AKURATE.DarkroomToneCurve",
-  (node) => createCurveController(node, SPEC),
+  (node) => createStack([
+    { c: createCurveController(node, SPEC) },
+    // live, exact histogram via the pixel bridge (pixel_bridge.py, /darkroom/lut)
+    { title: "Histogram", c: createLiveHistogram(node, { nodeType: "DarkroomToneCurve" }) },
+  ]),
   { tag: SPEC.tag, minWidth: SPEC.minWidth, requireWidget: SPEC.points[0].widget });

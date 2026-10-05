@@ -50,7 +50,7 @@ class ColorSpaceTransform:
         if strength <= 0.0 or source_space == target_space:
             return (image,)
 
-        print(f"[Darkroom] Color Space Transform: {source_space} → {target_space}")
+        print(f"[Darkroom] Color Space Transform: {source_space} -> {target_space}")
 
         def process(img):
             original = img

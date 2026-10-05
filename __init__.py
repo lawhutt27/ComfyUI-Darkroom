@@ -1,6 +1,8 @@
 from .nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 from . import server_routes  # registers /darkroom/list_dir and /darkroom/mkdir
 from . import grading_preset_routes  # registers /darkroom/grading_presets
+from . import pixel_bridge  # registers /darkroom/pixels and /darkroom/lut (live scopes)
+pixel_bridge.install(NODE_CLASS_MAPPINGS)
 
 WEB_DIRECTORY = "./web"
 
@@ -25,4 +27,4 @@ def _warm_cuda():
 
 _warm_cuda()
 
-print("\033[34m[ComfyUI-Darkroom] \033[92mLoaded — 59 nodes (Film Emulation + Camera Raw + Color Grading + Lens & Optics + LUT Pipeline + RAW Pipeline w/ DCP + Spectral Film Stock + Scopes + Color Match + CMYK Print)\033[0m")
+print("\033[34m[ComfyUI-Darkroom] \033[92mLoaded - 59 nodes (Film Emulation + Camera Raw + Color Grading + Lens & Optics + LUT Pipeline + RAW Pipeline w/ DCP + Spectral Film Stock + Scopes + Color Match + CMYK Print)\033[0m")
