@@ -6,6 +6,10 @@ Color grading and film emulation for ComfyUI: 59 nodes, 161 film stocks, 35 spec
 
 The most complete color toolset in the ComfyUI ecosystem: physics-based film emulation, DaVinci Resolve-level color grading, Camera Raw processing, optical simulation, LUT export, ACES color management, and magazine-ready CMYK print output. Everything runs locally, no external dependencies.
 
+## Darkroom Studio (standalone app for Google Colab)
+
+The [`studio/`](studio/README.md) folder holds Darkroom Studio, a standalone Gradio photo editor that runs in Google Colab without ComfyUI. It develops RAW files (NEF, CR2, DNG) with LibRaw, grades them with a deterministic, non-generative engine, turns plain-language prompts into validated recipes, and exports 16-bit TIFF masters at full resolution. Open [`studio/Darkroom_Studio.ipynb`](studio/Darkroom_Studio.ipynb) in Colab to start.
+
 ## Nodes
 
 ### Film emulation (14 nodes)
