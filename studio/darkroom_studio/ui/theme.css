@@ -1,0 +1,41 @@
+/* Darkroom Studio: neutral-grey photographic workspace with a safelight-amber accent */
+:root, .dark {
+  --dr-bg: #111113;
+  --dr-panel: #1a1a1d;
+  --dr-panel-2: #212125;
+  --dr-line: #2c2c31;
+  --dr-text: #d8d8dc;
+  --dr-dim: #8d8d96;
+  --dr-accent: #d9a441;
+}
+body, gradio-app, .gradio-container { background: var(--dr-bg) !important; color: var(--dr-text); }
+.gradio-container { max-width: 100% !important; padding: 0 10px !important; }
+footer { display: none !important; }
+
+#dr-header { align-items: center; gap: 10px; padding: 8px 4px 6px; border-bottom: 1px solid var(--dr-line); margin-bottom: 6px; }
+#dr-brand { min-width: 140px; font-family: "Inter", system-ui, sans-serif; font-weight: 300; letter-spacing: .42em; font-size: 15px;
+  color: var(--dr-text); white-space: nowrap; padding-right: 10px; }
+#dr-brand b { color: var(--dr-accent); font-weight: 600; }
+#dr-prompt textarea { background: var(--dr-panel-2) !important; border: 1px solid var(--dr-line) !important;
+  font-size: 13px !important; }
+.dr-toolbtn { white-space: nowrap !important; padding: 6px 10px !important; font-size: 12px !important;
+  text-transform: uppercase; letter-spacing: .06em; }
+#dr-apply { background: var(--dr-accent) !important; color: #1a1408 !important; font-weight: 600; }
+
+.dr-panel { background: var(--dr-panel) !important; border: 1px solid var(--dr-line) !important;
+  border-radius: 8px !important; padding: 6px !important; }
+.dr-panel .label-wrap span, .dr-panel label span, .dr-section-title {
+  font-size: 11px !important; text-transform: uppercase; letter-spacing: .08em; color: var(--dr-dim) !important; }
+.dr-panel .block { background: transparent !important; border: none !important; box-shadow: none !important; }
+.dr-panel input[type=range] { accent-color: var(--dr-accent); }
+.dr-panel .gr-accordion, .dr-panel details { border-bottom: 1px solid var(--dr-line) !important; }
+
+#dr-canvas { background: #0b0b0c !important; border: 1px solid var(--dr-line); border-radius: 8px; }
+#dr-canvas img { object-fit: contain; }
+#dr-status { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; color: var(--dr-dim);
+  border-top: 1px solid var(--dr-line); padding: 6px 4px; }
+#dr-status .k { color: #6f6f78; text-transform: uppercase; letter-spacing: .08em; margin-right: 4px; }
+#dr-status .v { color: var(--dr-text); margin-right: 18px; }
+#dr-status .warn { color: #e3a857; }
+.dr-note { font-size: 12px; color: var(--dr-dim); }
+.dr-warn { color: #e3a857; font-size: 12px; }
