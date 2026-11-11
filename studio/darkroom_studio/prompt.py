@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import os
 import re
 import urllib.error
@@ -64,11 +65,11 @@ STYLE_RULES = [
      {"basic.contrast": 6, "effects.grain_amount": 15, "effects.fade": 5, "basic.temperature": 6},
      "1990s: warm consumer negative"),
     (r"\b(20)?00'?s\b|y2k|two thousands", "Studio / Gold 200-inspired",
-     {"basic.temperature": 14, "basic.vibrance": 12, "effects.halation_amount": 20, "effects.halation_radius": 40,
+     {"basic.temperature": 10, "basic.vibrance": 8, "effects.halation_amount": 20, "effects.halation_radius": 40,
       "effects.fade": 6, "color_grading.highlights_hue": 40, "color_grading.highlights_saturation": 20},
      "2000s: warm glowing highlights, bloom"),
     (r"music[\s-]*video", None,
-     {"effects.halation_amount": 15, "basic.vibrance": 10, "color_grading.highlights_saturation": 10,
+     {"effects.halation_amount": 15, "basic.vibrance": 6, "color_grading.highlights_saturation": 10,
       "color_grading.highlights_hue": 35}, "music-video glow and colour"),
     (r"independent film|indie film|arthouse", "Studio / Vision3 250D-inspired",
      {"basic.contrast": -6, "effects.fade": 8, "basic.saturation": -8, "effects.grain_amount": 15},
@@ -165,8 +166,18 @@ def _intensity(prefix):
     return 1.0
 
 
+def _is_absolute(path):
+    """Hues, sizes and radii are targets, not amounts: the first phrase that sets them wins."""
+    spec = R.NUMERIC_BY_PATH[path]
+    return path.endswith("_hue") and path.startswith("color_grading") or spec.default != 0
+
+
 def _add(acc, path, delta):
-    acc[path] = acc.get(path, 0.0) + delta
+    if _is_absolute(path):
+        acc.setdefault(path, ("abs", delta))
+        return
+    prev = acc.get(path, 0.0)
+    acc[path] = (prev if not isinstance(prev, tuple) else 0.0) + delta
 
 
 class RuleInterpreter:
@@ -190,7 +201,7 @@ class RuleInterpreter:
                     continue
                 k = _intensity(pre)
                 for p, d in deltas.items():
-                    _add(acc, p, d * k)
+                    _add(acc, p, d if _is_absolute(p) else d * k)
                 if st and stock is None:
                     stock, stock_reason = st, f"“{m.group(0).strip()}” → {why} ({st.split(' / ')[1]})"
                 else:
@@ -233,12 +244,12 @@ class RuleInterpreter:
                     for p in deltas:
                         if p.startswith("effects.grain") or p.startswith("effects.vignette") \
                                 or p.startswith("effects.halation"):
-                            acc[p] = -1e9   # explicit "no grain" etc.: force to minimum
+                            acc[p] = -1e9   # explicit "no grain" etc.: force to neutral
                     notes.append(f"“{pre.split()[-1]} {m.group(0).strip()}” → {why} suppressed")
                     break
                 k = _intensity(pre)
                 for p, d in deltas.items():
-                    _add(acc, p, d * k)
+                    _add(acc, p, d if _is_absolute(p) else d * k)
                 notes.append(f"“{m.group(0).strip()}” → {why}" + (" ×%.1f" % k if k != 1 else ""))
                 break
 
@@ -248,7 +259,17 @@ class RuleInterpreter:
         for path, d in acc.items():
             g, key = path.split(".")
             cur = R.get(base, path)
-            partial.setdefault(g, {})[key] = R.NUMERIC_BY_PATH[path].lo if d < -1e8 else cur + d
+            if isinstance(d, tuple):            # absolute target
+                partial.setdefault(g, {})[key] = d[1]
+                continue
+            spec = R.NUMERIC_BY_PATH[path]
+            if d < -1e8:
+                partial.setdefault(g, {})[key] = spec.default
+                continue
+            # several phrases often push the same control: combine with a soft limit so
+            # "warm 2000s nostalgic music video" stays tasteful instead of summing linearly
+            scale = 0.5 * max(abs(spec.hi), abs(spec.lo))
+            partial.setdefault(g, {})[key] = cur + scale * math.tanh(d / scale)
         if stock:
             partial.setdefault("film", {})["stock"] = stock
             if R.get(base, "film.strength") == 0:
