@@ -82,7 +82,7 @@ STUDIO_LOOKS = [
              master=(S, (0.05, 0.06), (0.25, 0.25), (0.5, 0.53), (0.78, 0.8), (0.95, 0.945), E),
              red=(S, (0.5, 0.525), E), green=(S, (0.5, 0.51), E), blue=(S, (0.5, 0.455), E),
              saturation=1.08, highlight_desat=0.2, shadow_tint=(30, 0.08), highlight_tint=(48, 0.35),
-             hue_shift={"green": 10, "blue": -5}, band_sat={"yellow": 1.15, "red": 1.1, "blue": 0.9}),
+             hue_shift={"green": 6, "blue": -5}, band_sat={"yellow": 1.08, "red": 1.1, "blue": 0.9, "green": 0.95}),
     # ---- Kodak Ektar-inspired: vivid, contrasty, clean
     FilmLook("Ektar 100-inspired", "Kodak-inspired colour negative",
              "Ultra-vivid landscape negative: deep blues, saturated reds, crisp contrast.",
