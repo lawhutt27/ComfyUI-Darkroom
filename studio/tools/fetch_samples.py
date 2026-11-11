@@ -3,7 +3,8 @@
     python tools/fetch_samples.py [target_dir]
 
 Files are verified by SHA-256.  Nikon D5300 14-bit and 12-bit NEF (lens: AF-S DX
-18-140mm), Canon EOS 1000D / Rebel XS CR2 (lens: EF-S 18-55mm IS).
+18-140mm), Canon EOS 1000D / Rebel XS CR2 (lens: EF-S 18-55mm IS), and a Pentax K-x
+camera-native DNG (lens: smc DA L 18-55mm, ISO 2000).
 """
 
 import hashlib
@@ -19,6 +20,9 @@ FILES = {
                         "0ae88fc81f082929d76dd1b932aacf7815cd6bc670b96ef55a81928e11084a6c"),
     "EOS1000D.CR2": ("Canon/EOS%201000D/IMG_9406.CR2",
                      "08b0843a7968315b68bd3c71a96c952ebf275d5b5eba4b6094ae8b103522584c"),
+    # camera-native DNG 1.1 (listed on raw.pixls.us as CC0; the in-file copyright tag says CC BY)
+    "PentaxKx.DNG": ("Pentax/K-x/IMGP6431.DNG",
+                     "7a594b66b54f99bb5aba4627c78abfc41213d6911ea54e4f5d2dd6c8505f6968"),
 }
 
 

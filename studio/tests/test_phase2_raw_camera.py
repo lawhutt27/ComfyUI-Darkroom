@@ -154,3 +154,23 @@ def test_camera_advice(studio):
         assert rec["detail"]["sharpen_amount"] > 0
         clean, warns = R.validate(rec, partial=True, base=R.default_recipe())
         assert not [w for w in warns if "unknown" in w]
+
+
+def test_real_camera_dng(studio):
+    """Camera-native DNG 1.1 from a Pentax K-x (raw.pixls.us)."""
+    path = sample("PentaxKx.DNG")
+    digest = sha256_file(path)
+    s = studio.open(path)
+    src = s.source
+    assert src.kind == "raw" and src.file_format == "DNG"
+    assert (src.width, src.height) == (4309, 2868) and src.bit_depth == 12
+    assert src.info["iso"] == 2000                     # EXIF value, not the Pentax maker-note index (19)
+    assert "18-55" in src.info["lens"] and src.info["aperture"] == 5.6
+    r = s.recipe
+    r["basic"]["exposure"] = 0.3
+    r["detail"]["nr_luminance"] = 30
+    s.commit(r)
+    res = s.export("TIFF 16-bit (master, lossless)", "sRGB", keep_metadata=True)
+    with tifffile.TiffFile(res["path"]) as tf:
+        assert tf.pages[0].shape == (2868, 4309, 3) and tf.pages[0].dtype == np.uint16
+    assert sha256_file(path) == digest

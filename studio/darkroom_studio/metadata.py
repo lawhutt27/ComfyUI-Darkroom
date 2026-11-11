@@ -40,12 +40,30 @@ def read_exiftool(path):
         return None, None
     try:
         fmt = json.loads(_run_exiftool(["-j", "-a", "-G1", "-struct", "-api", "largefilesupport=1", path]))[0]
-        num = json.loads(_run_exiftool(["-j", "-n", *[f"-{t}" for t in _NUMERIC_TAGS],
+        raw = json.loads(_run_exiftool(["-j", "-n", "-a", "-G1", *[f"-{t}" for t in _NUMERIC_TAGS],
                                         "-InteropIndex", path]))[0]
-        return fmt, num
+        return fmt, _prefer_standard(raw)
     except Exception as e:  # pragma: no cover - depends on host binary
         print(f"[Darkroom] exiftool failed: {e}")
         return None, None
+
+
+# Standard EXIF/TIFF groups win over maker notes: with -n, maker-note values can be
+# vendor codes (a Pentax K-x stores ISO 2000 as the index 19 in Pentax:ISO).
+_GROUP_PRIORITY = ("ExifIFD", "IFD0", "SubIFD", "InteropIFD", "XMP-exif", "XMP-tiff", "Composite")
+
+
+def _prefer_standard(grouped):
+    out = {}
+    for key, v in grouped.items():
+        if ":" not in key:
+            continue
+        group, tag = key.split(":", 1)
+        rank = _GROUP_PRIORITY.index(group) if group in _GROUP_PRIORITY else len(_GROUP_PRIORITY)
+        if v in (None, "") or (tag in out and out[tag][0] <= rank):
+            continue
+        out[tag] = (rank, v)
+    return {t: v for t, (_, v) in out.items()}
 
 
 def _first(d, *keys):

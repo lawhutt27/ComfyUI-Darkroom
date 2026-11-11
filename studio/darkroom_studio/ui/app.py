@@ -477,6 +477,15 @@ def build_app(workdir=None, preview_long_edge=None):
                 expl += "\n\n<span class='dr-warn'>" + html.escape("; ".join(warns[:6])) + "</span>"
             return [*_apply_recipe(sess, r, mode, zm, px, py, "prompt applied"), expl]
 
+        def on_interp(engine_name):
+            if engine_name.startswith("OpenRouter"):
+                gr.Warning("Optional AI mode: your prompt text and the current recipe numbers are sent to "
+                           "openrouter.ai. The photograph is never sent. The reply is checked against the recipe "
+                           "schema and is never run as code. Needs OPENROUTER_API_KEY (Colab secret or "
+                           "environment variable); without it the local rules are used.", duration=12)
+
+        interp.change(on_interp, interp, None)
+
         apply_btn.click(on_prompt, [sess_state, prompt, interp, fresh, *view_inputs], [*hist_outs, explain_md])
         prompt.submit(on_prompt, [sess_state, prompt, interp, fresh, *view_inputs], [*hist_outs, explain_md])
 
@@ -641,20 +650,8 @@ def build_app(workdir=None, preview_long_edge=None):
             if not files:
                 raise gr.Error("Add photos to the batch.")
             r = sess.recipe if sess else R.default_recipe()
-            r["match"]["data"] = r["match"]["data"]  # frozen transfer applies identically
-            out_zip = os.path.join(studio.dirs["batch"], time.strftime("batch_%Y%m%d_%H%M%S.zip"))
-            lines = []
-            with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_STORED) as zf:
-                for i, f in enumerate(progress.tqdm(files, desc="Batch")):
-                    try:
-                        bs = studio.open(f)
-                        res = bs.export(fmt, "Same as source/working space", 97, True, recipe=r)
-                        zf.write(res["path"], os.path.basename(res["path"]))
-                        zf.write(res["sidecar"], os.path.basename(res["sidecar"]))
-                        lines.append(f"✓ {os.path.basename(f)} → {res['width']}×{res['height']}")
-                        del bs
-                    except Exception as e:
-                        lines.append(f"✗ {os.path.basename(f)}: {e}")
+            out_zip, res = studio.batch(files, r, fmt, progress=lambda fs: progress.tqdm(fs, desc="Batch"))
+            lines = [("✓ " if ok else "✗ ") + msg for ok, msg in res]
             return out_zip, "\n".join(f"- {l}" for l in lines)
 
         batch_btn.click(on_batch, [sess_state, batch_files, batch_fmt], [batch_out, batch_md])

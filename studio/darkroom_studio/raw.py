@@ -152,8 +152,10 @@ def develop_raw(path, settings: RawSettings | None = None):
             "raw_width": int(sizes.raw_width), "raw_height": int(sizes.raw_height),
             "visible_width": int(sizes.width), "visible_height": int(sizes.height),
             "margins": {"top": int(sizes.top_margin), "left": int(sizes.left_margin)},
-            "camera_crop_hint": {"left": int(sizes.crop_left_margin), "top": int(sizes.crop_top_margin),
-                                 "width": int(sizes.crop_width), "height": int(sizes.crop_height)},
+            # recorded only, never applied; rawpy < 0.25 does not expose it
+            "camera_crop_hint": ({"left": int(sizes.crop_left_margin), "top": int(sizes.crop_top_margin),
+                                  "width": int(sizes.crop_width), "height": int(sizes.crop_height)}
+                                 if hasattr(sizes, "crop_width") else None),
             "flip": int(sizes.flip),
             "flip_orientation": _flip_to_orientation(sizes.flip),
             "color_desc": raw.color_desc.decode(errors="replace"),
@@ -171,7 +173,7 @@ def develop_raw(path, settings: RawSettings | None = None):
                             "noise_reduction": "off", "median_filter": "off"},
             "base_curve": s.base_curve,
         }
-    if meta["camera_crop_hint"]["width"]:
+    if (meta["camera_crop_hint"] or {}).get("width"):
         notes.append(f"LibRaw output {img16.shape[1]}×{img16.shape[0]} is kept as-is; the camera's own "
                      f"JPEG crop ({meta['camera_crop_hint']['width']}×{meta['camera_crop_hint']['height']}) "
                      "is recorded in the sidecar but NOT applied.")

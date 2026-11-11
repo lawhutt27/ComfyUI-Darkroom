@@ -92,6 +92,30 @@ class Studio:
         with open(path) as f:
             return R.validate(json.load(f))
 
+    def batch(self, files, recipe, fmt="TIFF 16-bit (master, lossless)", progress=None):
+        """Apply one recipe to many photos at their own full resolution and zip the results.
+
+        Each photo is opened (originals protected as usual), exported, and released before
+        the next, so memory stays at one image. Failures are reported per file, not raised."""
+        import zipfile
+        recipe = R.validate(recipe)[0]
+        out_zip = os.path.join(self.dirs["batch"], time.strftime("batch_%Y%m%d_%H%M%S.zip"))
+        lines = []
+        it = progress(files) if progress else files
+        with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_STORED) as zf:
+            for f in it:
+                name = os.path.basename(f)
+                try:
+                    s = self.open(f)
+                    res = s.export(fmt, "Same as source/working space", 97, True, recipe=recipe)
+                    for k in ("path", "sidecar"):
+                        zf.write(res[k], os.path.basename(res[k]))
+                    lines.append((True, f"{name} \u2192 {res['width']}\u00d7{res['height']}"))
+                    del s
+                except Exception as e:  # noqa: BLE001 - reported per file
+                    lines.append((False, f"{name}: {e}"))
+        return out_zip, lines
+
     def open(self, path, raw_settings=None):
         return EditSession(self, path, raw_settings)
 
