@@ -8,7 +8,9 @@ Date: 2026-11-11. Python 3.12.3, Linux x86-64, 4 CPU cores, 16 GB RAM, no GPU (s
 |---|---|
 | Current (`requirements.txt`: numpy 2.5.4, gradio 6.31.0, rawpy 0.28.0 / LibRaw 0.22.2, Pillow 12.3.0, OpenCV 5.0) | **317 passed**, 0 failed, 0 skipped, 3 min 36 s |
 | Oldest supported (`requirements-min.txt`: numpy 2.0.2, gradio 6.2.0, rawpy 0.24.0 / LibRaw 0.21.3, Pillow 11.0.0, OpenCV 4.10) | **317 passed**, 0 failed, 0 skipped, 3 min 34 s |
-| Notebook cells 1–12 executed top to bottom (oldest set; cell 4 pointed at the local checkout, cell 13 launch not executed headless) | All cells ran; cell 12's test run: 315 passed, 2 slow tests deselected |
+| Notebook start cell in a fresh Colab-like environment (only numpy 2.0.2, scipy 1.14.1, Pillow 11.0, OpenCV 4.10 preinstalled) | Installed tifffile, rawpy, exifread and Gradio 6.31 in about a minute **without changing NumPy, SciPy, Pillow or OpenCV**; self-check passed; the app launched |
+| Notebook start cell on an environment that already has everything | Nothing installed; app launched in a few seconds |
+| Notebook test cell (`run_tests`) in that fresh environment (Gradio 6.31 with NumPy 2.0.2), with the real camera files | 315 passed, 2 slow tests deselected |
 | Browser walk-through, `tools/e2e_ui.js` (Chromium, Playwright) on the D5300 NEF and the Pentax DNG | Every step passed, 0 browser errors, 0 server tracebacks |
 
 Running on the older set found one real bug (rawpy 0.24 has no camera-crop fields), and the real DNG found another (the Pentax maker-note ISO code was shown instead of the EXIF ISO). Both are fixed and covered by tests.

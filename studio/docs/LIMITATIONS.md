@@ -37,4 +37,4 @@ These are honest limits of the current version. None of them can damage an origi
 * **One user at a time.** Requests are queued (concurrency 1). The shared Colab link gives anyone who has it access to the session's working folder while it runs.
 * **No manual crop or rotate.** Deliberately left out: the brief prioritises never changing dimensions.
 * **Batch** applies one recipe to many photos at full resolution, one after another, and returns a zip. It has no per-photo adjustment step.
-* **Working files live in the runtime** unless you point the working folder at Google Drive (notebook cell 10).
+* **Working files live in the runtime** unless you point the working folder at Google Drive (tick *save_to_google_drive* on the notebook's start cell).

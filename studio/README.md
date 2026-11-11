@@ -11,9 +11,12 @@ A professional, deterministic photo colour-grading and editing application for G
 
 ## Quick start (Colab)
 
-1. Open `studio/Darkroom_Studio.ipynb` in Colab (File → Open notebook → GitHub, `lawhutt27/ComfyUI-Darkroom`, branch `claude/project-thread-b2tvuh`).
-2. Run cells 1 to 13 in order. Cell 2 only installs what is missing. Cell 12 runs the test suite. Cell 13 prints a link to the app.
-3. Optional: to use the OpenRouter interpreter, add a Colab secret named `OPENROUTER_API_KEY` (key icon in the left sidebar) and enable notebook access. Never paste a key into a cell.
+1. Open `studio/Darkroom_Studio.ipynb` in Colab (use the "Open in Colab" badge in the notebook, or File → Open notebook → GitHub, `lawhutt27/ComfyUI-Darkroom`).
+2. Press ▶ on **Start Darkroom Studio**. That one cell downloads the app, installs only what is missing (it never upgrades Colab's own NumPy, SciPy, Pillow, OpenCV or PyTorch), runs a quick self-check and prints a link to the app. The first run takes about a minute; later runs a few seconds.
+3. Two tick-boxes on the cell: *save_to_google_drive* keeps originals, exports and presets in `My Drive/Darkroom Studio`; *public_link* gives a `gradio.live` link (untick it to show the app inside the notebook).
+4. Optional: to use the OpenRouter interpreter, add a Colab secret named `OPENROUTER_API_KEY` (key icon in the left sidebar), enable notebook access, and run the start cell again. Never paste a key into a cell.
+
+A second, optional cell runs the automated tests. The same steps can be called from Python: `from darkroom_studio.colab import start; start()`.
 
 ## Quick start (local)
 
@@ -58,7 +61,7 @@ Every control is independent and resettable, every change is undoable, and Reset
 
 ```
 studio/
-  Darkroom_Studio.ipynb     Colab notebook (cells 1-13)
+  Darkroom_Studio.ipynb     Colab notebook (one start cell, one optional test cell)
   darkroom_studio/
     colorspace.py           colour spaces, ICC read/write, conversions
     imaging.py              loaders, orientation, original protection
@@ -70,6 +73,7 @@ studio/
     prompt.py               rule interpreter, OpenRouter client
     match.py                reference colour matching
     export.py, session.py   export and editing sessions
+    colab.py                one-call setup and launch used by the notebook
     advisor.py, presets.py, scopes.py, runtime.py
     ui/app.py, ui/theme.css Gradio interface
   tests/                    pytest suite (synthetic and real-camera, kept apart)
