@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/api.ts","./src/main.tsx","./src/types.ts","./src/util.ts","./src/components/ExportDialog.tsx","./src/components/Inspector.tsx","./src/components/LayersPanel.tsx","./src/components/Slider.tsx","./src/components/Viewer.tsx"],"version":"5.9.3"}

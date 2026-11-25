@@ -1,0 +1,7 @@
+# Darkroom Web worker. Python 3.12 / 3.13, tested on Linux x86-64, CPU only.
+# The imaging core's own pins are in ../../studio/requirements.txt; install both:
+#   pip install -r ../../studio/requirements.txt -r requirements.txt
+fastapi==0.165.0
+uvicorn==0.54.0
+python-multipart==0.0.34
+httpx==0.28.1
